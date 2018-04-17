@@ -21,13 +21,13 @@
 
 struct _table_stm8
 {
-  char *instr;
+  const char *instr;
   ut8 instr_enum;
 };
 
 struct _table_stm8_regs
 {
-  char *reg;
+  const char *reg;
   ut8 reg_enum;
 };
 
@@ -46,7 +46,7 @@ struct _table_stm8_opcodes
 
 enum
 {
-  STM8_NONE,
+  STM8_NONE = 0,
   STM8_ADC,
   STM8_ADD,
   STM8_ADDW,
@@ -157,7 +157,7 @@ enum
 
 enum
 {
-  OP_NONE,
+  OP_NONE = 0,
   OP_REG_A,
   OP_REG_X,
   OP_REG_Y,
@@ -201,8 +201,8 @@ enum
   //OP_ADDRESS16,
 };
 
-extern struct _table_stm8 table_stm8[];
-extern struct _table_stm8_opcodes table_stm8_opcodes[];
-extern struct _table_stm8_regs table_stm8_regs[];
+extern const struct _table_stm8 table_stm8[];
+extern const struct _table_stm8_opcodes table_stm8_opcodes[];
+extern const struct _table_stm8_regs table_stm8_regs[];
 
 #endif

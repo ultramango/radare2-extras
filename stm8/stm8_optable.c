@@ -8,12 +8,14 @@
  *
  * Copyright 2010-2017 by Michael Kohn
  *
+ * Modified to work as a radare2 plugin
+ *
  */
 
 #include "stm8_disassemble.h"
 #include "stm8_optable.h"
 
-struct _table_stm8 table_stm8[] = {
+const struct _table_stm8 table_stm8[] = {
   { "adc", STM8_ADC },
   { "add", STM8_ADD },
   { "addw", STM8_ADDW },
@@ -122,7 +124,7 @@ struct _table_stm8 table_stm8[] = {
   { NULL, 0 }
 };
 
-struct _table_stm8_regs table_stm8_regs[] = {
+const struct _table_stm8_regs table_stm8_regs[] = {
   { "A", OP_REG_A },
   { "X", OP_REG_X },
   { "Y", OP_REG_Y },
@@ -138,7 +140,8 @@ struct _table_stm8_regs table_stm8_regs[] = {
 
 // October 21, 2014
 // teqo: please call the table bigHonkinTable
-struct _table_stm8_opcodes table_stm8_opcodes[] = {
+// For instruction details see: PM0044
+const struct _table_stm8_opcodes table_stm8_opcodes[] = {
   // instr_enum, type, prefix, opcode, dest, src, cycles_min, cycles_max, is_stm7
 
   // ADC

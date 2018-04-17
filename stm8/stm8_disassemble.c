@@ -1,15 +1,15 @@
-/* STM8 disassembler based on naked_asm
-   naked_asm: http://www.mikekohn.net/micro/naken_asm.php
-
-  *  naken_asm assembler.
-  *  Author: Michael Kohn
-  *   Email: mike@mikekohn.net
-  *     Web: http://www.mikekohn.net/
-  * License: GPLv3
-  *
-  * Copyright 2010-2017 by Michael Kohn
-  *
-*/
+/**
+ *  naken_asm assembler.
+ *  Author: Michael Kohn
+ *   Email: mike@mikekohn.net
+ *     Web: http://www.mikekohn.net/
+ * License: GPLv3
+ *
+ * Copyright 2010-2017 by Michael Kohn
+ *
+ * Modified to work as a plugin for radare2
+ *
+ */
 
 #include <r_asm.h>
 #include <r_lib.h>
@@ -17,7 +17,7 @@
 #include "stm8_disassemble.h"
 #include "stm8_optable.h"
 
-
+// Handy macros for accessing (binary) instruction buffer
 #define READ_RAM(a) (*(b+a))
 #define READ_RAM16(a) ( ((*(b+a))<<8)  | (*(b+a+1)) )
 #define READ_RAM24(a) ( ((*(b+a))<<16) | ((*(b+a))<<8) | (*(b+a+1)) )
@@ -33,7 +33,7 @@ static void get_instruction (char *instr, int instr_enum)
   {
     if (table_stm8[n].instr_enum == instr_enum)
     {
-      strcpy(instr, table_stm8[n].instr);
+      strcpy (instr, table_stm8[n].instr);
       break;
     }
     n++;
@@ -41,7 +41,7 @@ static void get_instruction (char *instr, int instr_enum)
 }
 
 // Add register text based on register enum
-void add_reg(char *instr, int reg)
+void add_reg (char *instr, int reg)
 {
   int n;
 
@@ -57,14 +57,15 @@ void add_reg(char *instr, int reg)
   }
 }
 
-//int disasm_stm8(struct _memory *memory, uint32_t address, char *instr, int *cycles_min, int *cycles_max)
-static int disassemble (RAsm *a, RAsmOp *op, const ut8 *b, int l) {
+// Disassemble one instruction
+static int disassemble (RAsm *a, RAsmOp *op, const ut8 *b, int l)
+{
   ut8 opcode;
   ut8 prefix = 0; // Initially prefix is none, can be a special opcode, see PM0044
                   // Has to be 0 as this is the default matching value in big instruction table
   ut8 offset;
   char temp[128];
-  char instr[128];
+  char instr[128]; // This is the output string
   int count = 1; // How many bytes processed in the stream
   int n;
 
@@ -85,7 +86,7 @@ static int disassemble (RAsm *a, RAsmOp *op, const ut8 *b, int l) {
 
   // Find the curent opcode in STM8 opcode table
   n = 0;
-  while(table_stm8_opcodes[n].instr_enum != STM8_NONE)
+  while (table_stm8_opcodes[n].instr_enum != STM8_NONE)
   {
     if (table_stm8_opcodes[n].prefix == prefix)
     {
@@ -286,14 +287,14 @@ static int disassemble (RAsm *a, RAsmOp *op, const ut8 *b, int l) {
       break;
 
     case OP_ADDRESS_BIT_LOOP:
-      offset = (int8_t)READ_RAM(count + 2);
+      offset = (int8_t) READ_RAM(count + 2);
       sprintf(temp, "$%x, #%d, $%x  (offset=%d)", READ_RAM16(count), (opcode & 0x0e) >> 1, (count + 3) + offset, offset);
       strcat(instr, temp);
       count += 3;
       break;
 
     case OP_RELATIVE:
-      offset = (int8_t)READ_RAM(count);
+      offset = (int8_t) READ_RAM(count);
       sprintf(temp, "$%x  (offset=%d)", (count + 1) + offset, offset);
       strcat(instr, temp);
       count++;
@@ -326,7 +327,7 @@ static int disassemble (RAsm *a, RAsmOp *op, const ut8 *b, int l) {
       break;
   }
 
-  // What is this?
+  // Next argument?
   if (table_stm8_opcodes[n].src != 0)
   {
     if (table_stm8_opcodes[n].type != OP_NONE &&
@@ -355,8 +356,7 @@ RAsmPlugin r_asm_plugin_stm8 = {
 };
 
 #ifndef CORELIB
-//RLibStruct radare_plugin = {
-struct r_lib_struct_t radare_plugin = {
+RLibStruct radare_plugin = {
   .type = R_LIB_TYPE_ASM,
   .data = &r_asm_plugin_stm8,
 };
