@@ -1,0 +1,21 @@
+NAME=stm8_plugin
+R2_PLUGIN_PATH=$(shell r2 -hh|grep USER_PLUGINS|awk '{print $$2}')
+CFLAGS=-g -fPIC $(shell pkg-config --cflags r_asm)
+LDFLAGS=-shared $(shell pkg-config --libs r_asm)
+OBJS=stm8_disassemble.o stm8_optable.o
+SO_EXT=$(shell uname|grep -q Darwin && echo dylib || echo so)
+LIB=$(NAME).$(SO_EXT)
+
+all: $(LIB)
+
+clean:
+	rm -f $(LIB) $(OBJS)
+
+$(LIB): $(OBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) -o $(LIB)
+
+install:
+	cp -f $(NAME).$(SO_EXT) $(R2_PLUGIN_PATH)
+
+uninstall:
+	rm -f $(R2_PLUGIN_PATH)/$(NAME).$(SO_EXT)
