@@ -14,10 +14,10 @@
 #include <r_asm.h>
 #include <r_lib.h>
 
-#include "stm8_disassemble.h"
 #include "stm8_optable.h"
 
 // Handy macros for accessing (binary) instruction buffer
+// TODO: perhaps change to b[a] to be more readible
 #define READ_RAM(a) (*(b+a))
 #define READ_RAM16(a) ( ((*(b+a))<<8)  | (*(b+a+1)) )
 #define READ_RAM24(a) ( ((*(b+a))<<16) | ((*(b+a))<<8) | (*(b+a+1)) )

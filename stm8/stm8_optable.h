@@ -15,6 +15,7 @@
 
 #include <r_asm.h>
 #include <r_lib.h>
+#include <r_anal.h>
 
 #define ST7_NO 0
 #define ST7_YES 1
@@ -42,6 +43,7 @@ struct _table_stm8_opcodes
   ut8 cycles_min;
   ut8 cycles_max;
   ut8 is_stm7;
+  _RAnalOpType optype;
 };
 
 enum
